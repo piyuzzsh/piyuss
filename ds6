@@ -1,0 +1,104 @@
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix
+
+df = pd.read_csv('iris.csv')
+
+# Display first 5 rows
+
+print("First 5 Rows:")
+
+print(df.head())
+
+df.info()
+
+df.isnull().sum()
+
+# Independent Variables
+
+X = df[['SepalLengthCm',
+
+        'SepalWidthCm',
+
+        'PetalLengthCm',
+
+        'PetalWidthCm']]
+
+# Dependent Variable
+
+y = df['Species']
+
+# Split Dataset
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+
+    y,
+
+    test_size=0.25,
+
+    random_state=42
+
+)
+
+# Create Naive Bayes Model
+
+model = GaussianNB()
+
+# Train Model
+
+model.fit(X_train, y_train)
+
+# Predict Values
+
+y_pred = model.predict(X_test)
+
+# Confusion Matrix
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:")
+
+print(cm)
+
+# Considering first class as Positive Class
+
+TP = cm[0][0]
+
+FP = cm[1][0] + cm[2][0]
+
+FN = cm[0][1] + cm[0][2]
+
+TN = cm.sum() - (TP + FP + FN)
+
+# Calculate Metrics
+
+accuracy = (TP + TN) / (TP + TN + FP + FN)
+
+error_rate = (FP + FN) / (TP + TN + FP + FN)
+
+precision = TP / (TP + FP)
+
+recall = TP / (TP + FN)
+
+# Display Results
+
+print("\nTP =", TP)
+
+print("FP =", FP)
+
+print("TN =", TN)
+
+print("FN =", FN)
+
+print("\nAccuracy =", accuracy)
+
+print("Error Rate =", error_rate)
+
+print("Precision =", precision)
+
+print("Recall =", recall)
