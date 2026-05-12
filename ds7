@@ -1,0 +1,118 @@
+# Import Libraries
+
+import nltk
+
+from nltk.tokenize import word_tokenize
+
+from nltk.corpus import stopwords
+
+from nltk.stem import PorterStemmer
+
+from nltk.stem import WordNetLemmatizer
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Read text file
+
+file = open(r"/Users/sanikadhide/Desktop/SAMPLE.txt", "r")
+
+text = file.read()
+
+print("Original Text:")
+print(text)
+
+# 1. Tokenization
+
+# ==========================================
+
+tokens = word_tokenize(text)
+
+print("\nTokens:")
+
+print(tokens)
+
+# 2. POS Tagging
+
+# ==========================================
+
+pos = nltk.pos_tag(tokens)
+
+print("\nPOS Tags:")
+
+print(pos)
+
+# 3. Stop Words Removal
+
+# ==========================================
+
+stop_words = set(stopwords.words('english'))
+
+filtered_words = []
+
+for word in tokens:
+
+    if word.lower() not in stop_words:
+
+        filtered_words.append(word)
+
+print("\nAfter Stop Word Removal:")
+
+print(filtered_words)
+
+# 4. Stemming
+
+# ==========================================
+
+ps = PorterStemmer()
+
+stemmed_words = []
+
+for word in filtered_words:
+
+    stemmed_words.append(ps.stem(word))
+
+print("\nStemmed Words:")
+
+print(stemmed_words)
+
+# 5. Lemmatization
+
+# ==========================================
+
+lm = WordNetLemmatizer()
+
+lemmatized_words = []
+
+for word in filtered_words:
+
+    lemmatized_words.append(lm.lemmatize(word))
+
+print("\nLemmatized Words:")
+
+print(lemmatized_words)
+
+# 6. TF-IDF Representation
+
+# ==========================================
+
+documents = [
+
+    "Machine Learning is useful",
+
+    "Artificial Intelligence uses Machine Learning",
+
+    "Data Science and Machine Learning"
+
+]
+
+vectorizer = TfidfVectorizer()
+
+tfidf = vectorizer.fit_transform(documents)
+
+print("\nTF-IDF Matrix:")
+
+print(tfidf.toarray())
+
+print("\nFeature Names:")
+
+print(vectorizer.get_feature_names_out())
