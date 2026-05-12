@@ -1,0 +1,52 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from seaborn import load_dataset
+
+# Load dataset
+
+df = sns.load_dataset('titanic')
+
+df.info()
+
+df.describe()
+
+df.isnull().sum()
+
+# Fill missing age with mean
+
+df['age'] = df['age'].fillna(np.mean(df['age']))
+
+# Drop deck (too many missing values)
+
+df.drop('deck', axis=1, inplace=True)
+
+# Fill categorical missing values with mode
+
+df['embarked'] = df['embarked'].fillna(df['embarked'].mode()[0])
+
+df['embark_town'] = df['embark_town'].fillna(df['embark_town'].mode()[0])
+
+# Box Plot: Age vs Gender + Survival
+
+sns.boxplot(x='sex', y='age', hue='survived', data=df)
+
+plt.title("Age Distribution by Gender and Survival")
+
+plt.xlabel("Gender")
+
+plt.ylabel("Age")
+
+plt.show()
+
+# Observations
+print("\nObservations:")
+
+print("1. Female passengers had higher survival rate than males.")
+
+print("2. Younger passengers had better survival chances.")
+
+print("3. Most male passengers did not survive.")
+
+print("4. Age distribution varies between survivors and non-survivors.")
