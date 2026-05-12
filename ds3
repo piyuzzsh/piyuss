@@ -1,0 +1,53 @@
+df.groupby('Gender')['Salary'].describe()
+
+salary_list = df.groupby('Age')['Salary'].apply(list)
+print(salary_list)
+
+from seaborn import load_dataset
+
+iris = load_dataset('iris')
+iris.head()
+
+iris.groupby('species').describe()
+
+iris['species'].unique()
+
+setosa = iris[iris['species']=='setosa']
+versicolor = iris[iris['species']=='versicolor']
+virginica = iris[iris['species']=='virginica']
+
+# Function to display statistics
+
+def statistics(species_name, data):
+
+    print("\nStatistics of", species_name)
+
+    print("\nMean")
+
+    print(data.mean(numeric_only=True))
+
+    print("\nStandard Deviation")
+
+    print(data.std(numeric_only=True))
+
+    print("\nMinimum Values")
+
+    print(data.min(numeric_only=True))
+
+    print("\nMaximum Values")
+
+    print(data.max(numeric_only=True))
+
+    print("\nPercentiles")
+
+    print(data.quantile([0.25, 0.50, 0.75], numeric_only=True))
+
+# Statistics for each species
+
+statistics("Setosa", setosa)
+statistics("Versicolor", versicolor)
+statistics("Virginica", virginica)
+
+print("Setosa Statistics:\n", setosa.describe())
+print("Versicolor Statistics:\n", versicolor.describe())
+print("Virginica Statistics:\n", virginica.describe())
