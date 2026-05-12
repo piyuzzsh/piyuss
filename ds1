@@ -1,0 +1,49 @@
+import numpy as np
+
+import pandas as pd
+
+iris = pd.read_csv('Iris.csv')
+
+df = pd.DataFrame(data=iris)
+
+df
+
+df.head(10)
+
+print(df.isnull().sum())
+
+print(df.describe())
+
+print(df.info())
+
+print(df.shape)
+
+print(df.dtypes)
+
+from sklearn.preprocessing import LabelEncoder
+
+label_encoder = LabelEncoder()
+
+df['Species'].unique()
+
+print("before encoding  : ", df['Species'].unique())
+
+df['Species'] = label_encoder.fit_transform(df['Species'])
+
+print("After encoding : ", df['Species'].unique())
+
+df['Species'].unique()
+
+df.head(10)
+
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+
+df[['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']] = scaler.fit_transform(
+    df[['SepalLengthCm', 'SepalWidthCm', 'PetalLengthCm', 'PetalWidthCm']]
+)
+
+print(df.head())
+
+```
