@@ -1,0 +1,71 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load dataset
+
+df = sns.load_dataset('iris')
+
+# 1. Feature Types
+print("Feature Types:")
+
+print("1. sepal_length : Numeric")
+
+print("2. sepal_width  : Numeric")
+
+print("3. petal_length : Numeric")
+
+print("4. petal_width  : Numeric")
+
+print("5. species      : Nominal (Categorical)")
+
+# 2. Histograms (Feature Distributions)
+
+df.hist(figsize=(10, 8), bins=15)
+
+plt.suptitle("Histogram of Iris Features")
+
+plt.show()
+
+# 3. Boxplots for all features
+
+plt.figure(figsize=(10, 6))
+
+sns.boxplot(data=df.drop('species', axis=1))
+
+plt.title("Boxplot of Iris Features")
+
+plt.show()
+
+# 4. Outlier Detection (IQR Method)
+
+def count_outliers(series):
+
+    Q1 = series.quantile(0.25)
+
+    Q3 = series.quantile(0.75)
+
+    IQR = Q3 - Q1
+
+    lower = Q1 - 1.5 * IQR
+
+    upper = Q3 + 1.5 * IQR
+
+    return series[(series < lower) | (series > upper)].count()
+
+print("\nOutliers in each feature:")
+
+for col in df.columns[:-1]:  # exclude species
+
+    print(col, ":", count_outliers(df[col]))
+
+# 5. Observations
+print("\nObservations:")
+
+print("1. Petal length and width clearly separate species.")
+
+print("2. Sepal width contains some outliers.")
+
+print("3. Petal features have higher variation.")
+
+print("4. Boxplots help identify outliers visually.")
