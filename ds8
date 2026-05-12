@@ -1,0 +1,57 @@
+# Data Visualization - Titanic Dataset
+
+import seaborn as sns
+
+import matplotlib.pyplot as plt
+
+# Load Titanic Dataset
+
+df = sns.load_dataset('titanic')
+
+# Display first 5 rows
+
+print(df.head())
+
+# 1. Survival Count
+
+sns.countplot(x='survived', data=df)
+
+plt.title("Survival Count")
+
+plt.show()
+
+#2. Gender vs Survival
+
+# ==========================================
+
+sns.countplot(x='sex', hue='survived', data=df)
+
+plt.title("Gender vs Survival")
+
+plt.show()
+
+# 3. Passenger Class vs Fare
+sns.boxplot(x='pclass', y='fare', data=df)
+
+plt.title("Passenger Class vs Fare")
+
+plt.show()
+
+ #4. Correlation Heatmap
+
+sns.heatmap(df.corr(numeric_only=True), annot=True)
+
+plt.title("Correlation Heatmap")
+
+plt.show()
+
+# 5. Fare Distribution
+plt.hist(df['fare'].dropna(), bins=20)
+
+plt.title("Fare Distribution")
+
+plt.xlabel("Fare")
+
+plt.ylabel("Number of Passengers")
+
+plt.show()
