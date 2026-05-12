@@ -1,0 +1,100 @@
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+
+from sklearn.linear_model import LogisticRegression
+
+from sklearn.metrics import confusion_matrix
+
+df = pd.read_csv('Social_Network_Ads.csv')
+
+# Display first 5 rows
+
+print("First 5 Rows:")
+
+print(df.head())
+
+# Convert Gender into numeric
+
+label_encoder = LabelEncoder()
+
+df['Gender'] = label_encoder.fit_transform(df['Gender'])
+
+df.info()
+
+df.describe()
+df.isnull().sum()
+
+# Independent Variables
+
+X = df[['Gender','Age', 'EstimatedSalary']]
+# Dependent Variable
+
+y = df['Purchased']
+
+# Split Dataset
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+
+    y,
+
+    test_size=0.25,
+
+    random_state=42
+
+)
+
+# Create Logistic Regression Model
+
+model = LogisticRegression()
+
+# Train Model
+
+model.fit(X_train, y_train)
+
+# Predict Values
+
+y_pred = model.predict(X_test)
+
+# Confusion Matrix
+
+cm = confusion_matrix(y_test, y_pred)
+
+# Extract TN, FP, FN, TP
+
+TN, FP, FN, TP = cm.ravel()
+
+# Calculate Metrics
+
+accuracy = (TP + TN) / (TP + TN + FP + FN)
+
+error_rate = (FP + FN) / (TP + TN + FP + FN)
+
+precision = TP / (TP + FP)
+
+recall = TP / (TP + FN)
+
+# Display Results
+
+print("\nConfusion Matrix:")
+
+print(cm)
+
+print("\nTP =", TP)
+
+print("FP =", FP)
+
+print("TN =", TN)
+
+print("FN =", FN)
+
+print("\nAccuracy =", accuracy)
+
+print("Error Rate =", error_rate)
+
+print("Precision =", precision)
+
+print("Recall =", recall)
