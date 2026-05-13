@@ -1,0 +1,28 @@
+#  assignment 2 McCulloch-Pitts Neural Network for AND-NOT Function
+
+def mcculloch_pitts_and_not(x1, x2):
+
+    w1 = 1
+    w2 = -1
+    threshold = 1
+
+    net = (x1 * w1) + (x2 * w2)
+
+    if net >= threshold:
+        return 1
+    else:
+        return 0
+
+print("AND-NOT Function using McCulloch-Pitts Neuron\n")
+
+# Run 4 times
+for i in range(4):
+
+    print("\nEnter inputs for case", i + 1)
+
+    x1 = int(input("Enter x1 (0 or 1): "))
+    x2 = int(input("Enter x2 (0 or 1): "))
+
+    output = mcculloch_pitts_and_not(x1, x2)
+
+    print("Output =", output)
