@@ -1,0 +1,89 @@
+#assignment 1
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(-10, 10, 100)
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def tanh(x):
+    return 2 / (1 + np.exp(-2 * x)) - 1
+
+def relu(x):
+    return np.maximum(0, x)
+
+def leakyrelu(x, alpha=0.01):
+    return np.where(x > 0, x, alpha * x)
+
+def softplus(x):
+    return np.log(1 + np.exp(x))
+
+def step_function(x):
+    return np.where(x >= 0, 1, 0)
+
+
+# Sigmoid Graph
+plt.figure(figsize=(6,4))
+plt.plot(x, sigmoid(x), label='Sigmoid')
+plt.title("Sigmoid Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+# Tanh Graph
+plt.figure(figsize=(6,4))
+plt.plot(x, tanh(x), label='Tanh')
+plt.title("Tanh Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+# ReLU Graph
+plt.figure(figsize=(6,4))
+plt.plot(x, relu(x), label='ReLU')
+plt.title("ReLU Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+# Leaky ReLU Graph
+plt.figure(figsize=(6,4))
+plt.plot(x, leakyrelu(x), label='Leaky ReLU')
+plt.title("Leaky ReLU Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+# Softplus Graph
+plt.figure(figsize=(6,4))
+plt.plot(x, softplus(x), label='Softplus')
+plt.title("Softplus Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+# Step Function Graph
+plt.figure(figsize=(6,4))
+plt.plot(x, step_function(x), label='Step Function')
+plt.title("Step Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.legend()
+plt.grid(True)
+plt.show()
