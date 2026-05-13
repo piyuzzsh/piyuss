@@ -1,0 +1,37 @@
+#assignmnet 5 
+import numpy as np
+
+# Taking user input for X1 and Y1
+X1 = np.array(list(map(int, input("Enter values for X1 separated by space: ").split())))
+Y1 = np.array(list(map(int, input("Enter values for Y1 separated by space: ").split())))
+
+# Taking user input for X2 and Y2
+X2 = np.array(list(map(int, input("Enter values for X2 separated by space: ").split())))
+Y2 = np.array(list(map(int, input("Enter values for Y2 separated by space: ").split())))
+
+# Calculating Weight Matrix
+W = np.outer(X1, Y1) + np.outer(X2, Y2)
+
+print("\nWeight Matrix W:\n", W)
+
+# Sign activation function
+def sign(x):
+    return np.where(x >= 0, 1, -1)
+
+# Taking input pattern for X
+input_x = np.array(list(map(int, input("\nEnter input X values: ").split())))
+
+# Finding output Y
+output_y = sign(np.dot(input_x, W))
+
+print("Input X:", input_x)
+print("Output Y:", output_y)
+
+# Taking input pattern for Y
+input_y = np.array(list(map(int, input("\nEnter input Y values: ").split())))
+
+# Finding output X
+output_x = sign(np.dot(input_y, W.T))
+
+print("Input Y:", input_y)
+print("Output X:", output_x)
