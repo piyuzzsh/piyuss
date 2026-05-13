@@ -1,0 +1,85 @@
+##assignment 3
+import numpy as np
+
+# Activation Function
+def activation(x):
+    if x >= 0:
+        return 1
+    else:
+        return 0
+
+
+# Convert ASCII to Binary
+def ascii_to_binary(ascii_value):
+
+    binary = format(ascii_value, '08b')
+
+    return [int(bit) for bit in binary]
+
+
+# ASCII values of digits 0 to 9
+ascii_digits = [48,49,50,51,52,53,54,55,56,57]
+
+# Input Features
+x_train = np.array([ascii_to_binary(num) for num in ascii_digits])
+
+# Labels
+# Even = 0
+# Odd = 1
+y_train = np.array([0,1,0,1,0,1,0,1,0,1])
+
+
+# Initialize Weights and Bias
+weights = np.zeros(8)
+
+bias = 0
+
+learning_rate = 0.1
+
+epochs = 10
+
+
+# Training
+for epoch in range(epochs):
+
+    for x, target in zip(x_train, y_train):
+
+        # Weighted Sum
+        net_input = np.dot(x, weights) + bias
+
+        # Predicted Output
+        output = activation(net_input)
+
+        # Error
+        error = target - output
+
+        # Update Weights
+        weights = weights + learning_rate * error * x
+
+        # Update Bias
+        bias = bias + learning_rate * error
+
+
+# User Input in ASCII
+ascii_input = int(input("Enter ASCII value of digit (48-57): "))
+
+
+# Convert ASCII to Binary
+x_test = np.array(ascii_to_binary(ascii_input))
+
+
+# Prediction
+net_input = np.dot(x_test, weights) + bias
+
+prediction = activation(net_input)
+
+
+# Display Result
+if prediction == 0:
+    print("Digit is Even")
+else:
+    print("Digit is Odd")
+
+
+print("\nEven = 0")
+print("Odd = 1")
