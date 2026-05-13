@@ -1,0 +1,127 @@
+ # assignment 8
+import numpy as np
+
+# Sigmoid Activation Function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+
+# Derivative of Sigmoid Function
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+
+# Taking Network Structure Input
+n_inputs = int(input("Enter number of input neurons: "))
+n_hidden = int(input("Enter number of hidden neurons: "))
+n_outputs = int(input("Enter number of output neurons: "))
+n_samples = int(input("Enter number of training samples: "))
+
+
+# Taking Input Training Data
+X = []
+
+print("\nEnter input values:")
+
+for i in range(n_samples):
+    values = list(map(float, input(f"Sample {i + 1}: ").split()))
+    X.append(values)
+
+X = np.array(X)
+
+
+# Taking Target Output Data
+y = []
+
+print("\nEnter target output values:")
+
+for i in range(n_samples):
+    values = list(map(float, input(f"Output {i + 1}: ").split()))
+    y.append(values)
+
+y = np.array(y)
+
+
+# Initialize Random Weights and Biases
+np.random.seed(42)
+
+# Input Layer → Hidden Layer
+weights_input_hidden = np.random.rand(n_inputs, n_hidden)
+bias_hidden = np.random.rand(1, n_hidden)
+
+# Hidden Layer → Output Layer
+weights_hidden_output = np.random.rand(n_hidden, n_outputs)
+bias_output = np.random.rand(1, n_outputs)
+
+
+# Training Parameters
+epochs = int(input("\nEnter number of epochs: "))
+learning_rate = float(input("Enter learning rate: "))
+
+
+# Training Process
+for epoch in range(epochs):
+
+    # ---------------- FORWARD PROPAGATION ----------------
+
+    # Hidden Layer Input
+    hidden_input = np.dot(X, weights_input_hidden) + bias_hidden
+
+    # Hidden Layer Output
+    hidden_output = sigmoid(hidden_input)
+
+    # Output Layer Input
+    final_input = np.dot(hidden_output,
+                         weights_hidden_output) + bias_output
+
+    # Predicted Output
+    predicted_output = sigmoid(final_input)
+
+    # ---------------- ERROR CALCULATION ----------------
+
+    error = y - predicted_output
+
+    # ---------------- BACKPROPAGATION ----------------
+
+    # Output Layer Gradient
+    d_predicted_output = error * sigmoid_derivative(predicted_output)
+
+    # Hidden Layer Error
+    error_hidden_layer = np.dot(d_predicted_output,
+                                weights_hidden_output.T)
+
+    # Hidden Layer Gradient
+    d_hidden_layer = error_hidden_layer * sigmoid_derivative(hidden_output)
+
+    # ---------------- UPDATE WEIGHTS ----------------
+
+    # Update Hidden → Output Weights
+    weights_hidden_output += np.dot(hidden_output.T,
+                                    d_predicted_output) * learning_rate
+
+    # Update Output Bias
+    bias_output += np.sum(d_predicted_output,
+                          axis=0,
+                          keepdims=True) * learning_rate
+
+    # Update Input → Hidden Weights
+    weights_input_hidden += np.dot(X.T,
+                                   d_hidden_layer) * learning_rate
+
+    # Update Hidden Bias
+    bias_hidden += np.sum(d_hidden_layer,
+                          axis=0,
+                          keepdims=True) * learning_rate
+
+    # ---------------- DISPLAY LOSS ----------------
+
+    if epoch % 1000 == 0:
+        loss = np.mean(np.square(error))
+        print(f"Epoch {epoch}, Loss: {loss:.6f}")
+
+
+# Final Output
+print("\nTraining Complete!")
+
+print("\nPredicted Output:")
+print(predicted_output)
