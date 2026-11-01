@@ -1,0 +1,47 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, ConfusionMatrixDisplay
+
+# Load genomic dataset
+data = load_breast_cancer()
+X, y = data.data, data.target
+
+# Split dataset
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale data
+sc = StandardScaler()
+Xtr_s, Xte_s = sc.fit_transform(Xtr), sc.transform(Xte)
+
+# Train models
+rf = RandomForestClassifier(random_state=42).fit(Xtr, ytr)
+svm = SVC(kernel='linear').fit(Xtr_s, ytr)
+
+# Evaluate models
+for name, model, test in [('Random Forest', rf, Xte), ('SVM', svm, Xte_s)]:
+    pred = model.predict(test)
+    print(name, "Accuracy:", accuracy_score(yte, pred))
+    ConfusionMatrixDisplay.from_predictions(yte, pred)
+    plt.title(name)
+    plt.show()
+
+# Compare accuracy
+results = pd.DataFrame({
+    'Model': ['Random Forest', 'SVM'],
+    'Accuracy': [accuracy_score(yte, rf.predict(Xte)),
+                 accuracy_score(yte, svm.predict(Xte_s))]
+})
+print(results)
+results.plot(x='Model', y='Accuracy', kind='bar', legend=False)
+plt.show()
+
+# Feature importance
+imp = pd.Series(rf.feature_importances_, index=data.feature_names)
+print("Important Features:\n", imp.nlargest(10))
+imp.nlargest(10).sort_values().plot(kind='barh')
+plt.show()
