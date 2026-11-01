@@ -1,0 +1,36 @@
+# Simple Inverted Index for Document Retrieval
+
+# Step 1: Read documents from text files
+docs = {}
+
+for i in range(1, 4):
+    with open("/Users/sanikadhide/Desktop/IR/doc" + str(i) + ".rtf", "r") as file:
+        docs[i] = file.read()
+
+# Step 2: Build inverted index
+index = {}
+
+for doc_id, text in docs.items():
+    for word in text.lower().split():
+        index.setdefault(word, set()).add(doc_id)
+
+# Step 3: Display inverted index
+print("Inverted Index:")
+
+for word, doc_ids in index.items():
+    print(word, ":", doc_ids)
+
+# Step 4: Enter search query
+query = input("\nEnter query: ").lower().split()
+
+# Step 5: Retrieve documents
+result = set(docs.keys())
+
+for word in query:
+    result = result & index.get(word, set())
+
+# Step 6: Display results
+print("\nDocuments found:", result)
+
+for doc_id in result:
+    print("Document", doc_id, ":", docs[doc_id])
