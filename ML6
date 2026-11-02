@@ -1,0 +1,103 @@
+import numpy as np
+import random
+
+# 1. Create the maze
+maze = np.array([
+    [0, 0, 0, 1, 0],
+    [1, 1, 0, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0]
+])
+
+start = (0, 0)
+goal = (4, 4)
+
+# Up, Down, Left, Right
+actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+# Initialize Q-table
+q_table = np.zeros((5, 5, 4))
+
+# 2. Learning parameters
+alpha = 0.8
+gamma = 0.95
+epsilon = 0.2
+episodes = 1000
+max_steps = 100
+
+# 3. Train the agent
+for episode in range(episodes):
+    state = start
+
+    for step in range(max_steps):
+        row, col = state
+
+        # Choose action using epsilon-greedy strategy
+        if random.random() < epsilon:
+            action = random.randint(0, 3)
+        else:
+            action = np.argmax(q_table[row, col])
+
+        # Find next position
+        dr, dc = actions[action]
+        new_row = row + dr
+        new_col = col + dc
+
+        # Check wall and boundary
+        if not (0 <= new_row < 5 and 0 <= new_col < 5) or maze[new_row, new_col] == 1:
+            new_row, new_col = row, col
+            reward = -10
+        elif (new_row, new_col) == goal:
+            reward = 100
+        else:
+            reward = -1
+
+        # Update Q-table
+        if (new_row, new_col) == goal:
+            q_table[row, col, action] += alpha * (
+                reward - q_table[row, col, action]
+            )
+        else:
+            q_table[row, col, action] += alpha * (
+                reward + gamma * np.max(q_table[new_row, new_col])
+                - q_table[row, col, action]
+            )
+
+        # Update current state
+        state = (new_row, new_col)
+
+        # Stop if goal is reached
+        if state == goal:
+            break
+
+# 4. Find the learned path
+state = start
+path = [state]
+
+for step in range(max_steps):
+    row, col = state
+
+    action = np.argmax(q_table[row, col])
+
+    dr, dc = actions[action]
+    new_row = row + dr
+    new_col = col + dc
+
+    # Check wall and boundary
+    if not (0 <= new_row < 5 and 0 <= new_col < 5) or maze[new_row, new_col] == 1:
+        break
+
+    state = (new_row, new_col)
+    path.append(state)
+
+    if state == goal:
+        break
+
+# 5. Display result
+print("Learned Path:", path)
+
+if state == goal:
+    print("Goal reached successfully!")
+else:
+    print("Goal could not be reached.")
