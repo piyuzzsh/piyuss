@@ -1,0 +1,169 @@
+# Data Cleaning and Preparation
+
+# Telecom Customer Churn Dataset
+
+# Step 1: Import Libraries
+
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.preprocessing import StandardScaler
+
+# Step 2: Load Dataset
+
+df = pd.read_csv("telecom_customer_churn.csv")
+
+# Step 3: Explore Dataset
+
+print("First 5 Rows:")
+
+print(df.head())
+
+print("\nDataset Shape:")
+
+print(df.shape)
+
+print("\nDataset Information:")
+
+df.info()
+
+print("\nStatistical Description:")
+
+print(df.describe())
+
+# Step 4: Convert Data Types
+
+df["TotalCharges"] = pd.to_numeric(
+
+    df["TotalCharges"], errors="coerce"
+
+)
+
+# Step 5: Handle Missing Values
+
+for col in df.columns:
+
+    if df[col].isnull().any():
+
+        if df[col].dtype == "object":
+
+            df[col] = df[col].fillna("Unknown")
+
+        else:
+
+            df[col] = df[col].fillna(df[col].median())
+
+print("\nMissing Values:")
+
+print(df.isnull().sum())
+
+# Step 6: Remove Duplicate Records
+
+df = df.drop_duplicates()
+
+print("\nDataset Shape After Removing Duplicates:")
+
+print(df.shape)
+
+# Step 7: Standardize Text Data
+
+for col in df.select_dtypes(include="object"):
+
+    df[col] = df[col].str.strip()
+
+# Step 8: Handle Outliers Using IQR
+
+columns = ["tenure", "MonthlyCharges", "TotalCharges"]
+
+for col in columns:
+
+    Q1 = df[col].quantile(0.25)
+
+    Q3 = df[col].quantile(0.75)
+
+    IQR = Q3 - Q1
+
+    lower = Q1 - 1.5 * IQR
+
+    upper = Q3 + 1.5 * IQR
+
+    df[col] = df[col].clip(lower, upper)
+
+print("\nOutliers Handled Successfully!")
+
+# Step 9: Feature Engineering
+
+df["TenureGroup"] = pd.cut(
+
+    df["tenure"],
+
+    bins=[-1, 12, 24, 48, float("inf")],
+
+    labels=["0-1yr", "1-2yr", "2-4yr", "4+yr"]
+
+)
+
+print("\nNew Feature:")
+
+print(df[["tenure", "TenureGroup"]].head())
+
+# Step 10: Separate Features and Target
+
+X = df.drop(columns=["customerID", "Churn"])
+
+y = df["Churn"]
+
+# Convert Categorical Data into Numerical Data
+
+X = pd.get_dummies(X, drop_first=True)
+
+print("\nEncoded Dataset Shape:")
+
+print(X.shape)
+
+# Step 11: Split Dataset
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+
+    y,
+
+    test_size=0.2,
+
+    random_state=42,
+
+    stratify=y
+
+)
+
+# Step 12: Scale the Data
+
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+
+X_test = scaler.transform(X_test)
+
+# Step 13: Export Cleaned Datasets
+
+train = pd.DataFrame(X_train, columns=X.columns)
+
+train["Churn"] = y_train.values
+
+test = pd.DataFrame(X_test, columns=X.columns)
+
+test["Churn"] = y_test.values
+
+train.to_csv("Churn_Train.csv", index=False)
+
+test.to_csv("Churn_Test.csv", index=False)
+
+# Step 14: Display Final Results
+
+print("\nTraining Set Shape:", train.shape)
+
+print("Testing Set Shape:", test.shape)
+
+print("\nData Cleaning and Preparation Completed Successfully!")
