@@ -1,0 +1,77 @@
+# Assignment 01: Principal Component Analysis (PCA)
+
+# Step 1: Import required libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from matplotlib.colors import ListedColormap
+
+# Step 2: Read the Wine dataset
+df = pd.read_csv("Wine.csv")
+
+# Step 3: Explore the dataset
+print(df.head())
+print(df.describe())
+print(df.info())
+print(df.shape)
+print(df.columns.tolist())
+print(df.isnull().sum())
+
+# Step 4: Separate input features and target variable
+X = df.drop("Customer_Segment", axis=1)
+y = df["Customer_Segment"]
+
+# Step 5: Standardize the features
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+# Step 6: Apply PCA to reduce features to 2 components
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+# Step 7: Store the reduced data in a DataFrame
+result = pd.DataFrame(X_pca, columns=["PC1", "PC2"])
+result["Customer_Segment"] = y.values
+
+# Display the first five rows
+print(result.head())
+
+# Step 8: Display explained variance
+print("Explained Variance:", pca.explained_variance_ratio_)
+
+print("Total Explained Variance:",
+      round(sum(pca.explained_variance_ratio_) * 100, 2), "%")
+
+# Step 9: Assign colors to customer segments
+colors = ListedColormap(["black", "red"])
+
+# Step 10: Plot PCA graph
+plt.figure(figsize=(10, 6))
+
+scatter = plt.scatter(
+    result["PC1"],
+    result["PC2"],
+    c=result["Customer_Segment"],
+    cmap=colors
+)
+
+# Step 11: Add labels and title
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("PCA - Wine Dataset")
+
+# Step 12: Display color bar on right side
+plt.colorbar(scatter, label="Customer Segment")
+
+# Step 13: Add legend for customer segments
+plt.scatter([], [], color="black", label="Customer Segment 1")
+plt.scatter([], [], color="red", label="Customer Segment 2")
+
+plt.legend(title="Customer Segments")
+
+# Step 14: Display grid
+plt.grid(True)
+
+# Step 15: Display the final graph
+plt.show()
