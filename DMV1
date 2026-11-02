@@ -1,0 +1,150 @@
+
+%pip install openpyxl
+# ------------------------------------------------------------
+
+# Problem: Analyzing Sales Data from Multiple File Formats
+
+# ------------------------------------------------------------
+
+# Step 1: Import necessary libraries
+
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+# ------------------------------------------------------------
+
+# Step 2: Load CSV data
+
+# ------------------------------------------------------------
+
+csv_data = pd.read_csv('sales_data.csv', encoding='latin1')
+
+
+
+# ------------------------------------------------------------
+# Step 3: Create Excel and JSON files
+# ------------------------------------------------------------
+csv_data.to_excel("sales-data.xlsx", index=False)
+csv_data.to_json("sales-data.json", orient="records", indent=4)
+
+print("CSV, Excel and JSON files created successfully.")
+
+# ------------------------------------------------------------
+# Step 4: Load data from all three formats
+# ------------------------------------------------------------
+csv_data = pd.read_csv('sales_data.csv', encoding='latin1')
+
+excel_data = pd.read_excel("sales-data.xlsx")
+
+json_data = pd.read_json("sales-data.json")
+
+# ------------------------------------------------------------
+# Step 5: Explore the data
+# ------------------------------------------------------------
+print("\nCSV Data:")
+print(csv_data.head())
+
+print("\nExcel Data:")
+print(excel_data.head())
+
+print("\nJSON Data:")
+print(json_data.head())
+
+print("\nCSV Data Information:")
+csv_data.info()
+
+print("\nMissing Values:")
+print(csv_data.isnull().sum())
+
+print("\nDuplicate Records:")
+print(csv_data.duplicated().sum())
+
+# ------------------------------------------------------------
+# Step 6: Clean the data
+# ------------------------------------------------------------
+
+# Create a copy of the CSV dataset
+sales_data = csv_data.copy()
+
+# Remove duplicate records
+sales_data.drop_duplicates(inplace=True)
+
+# Handle missing values
+sales_data["Product"] = sales_data["Product"].fillna("Unknown")
+
+sales_data["Quantity"] = sales_data[
+    "Quantity"
+].fillna(0)
+
+sales_data["Price"] = sales_data[
+    "Price"
+].fillna(0)
+
+# ------------------------------------------------------------
+# Step 7: Transform the data
+# ------------------------------------------------------------
+
+# Calculate total sales
+sales_data["Total"] = (
+    sales_data["Quantity"] *
+    sales_data["Price"]
+)
+
+print("\nCleaned Sales Data:")
+print(sales_data.head())
+
+# ------------------------------------------------------------
+# Step 8: Analyze the data
+# ------------------------------------------------------------
+
+# Calculate total sales
+total_sales = sales_data["Total"].sum()
+
+# Calculate average sales per record
+average_sales = sales_data["Total"].mean()
+
+# Calculate sales by product category
+category_sales = sales_data.groupby(
+    "Product"
+)["Total"].sum()
+
+print("\nTotal Sales:", round(total_sales, 2))
+
+print("Average Sales per Record:", round(average_sales, 2))
+
+print("\nSales by Product Category:")
+print(category_sales)
+
+# ------------------------------------------------------------
+# Step 9: Visualize the data
+# ------------------------------------------------------------
+
+# Bar chart
+category_sales.plot(kind="bar")
+
+plt.title("Sales by Product Category")
+plt.xlabel("Product Category")
+plt.ylabel("Total Sales")
+plt.tight_layout()
+plt.show()
+
+# Pie Chart
+category_sales.plot(kind="pie", autopct="%1.1f%%")
+
+plt.title("Sales Distribution by Product Category")
+plt.ylabel("")
+plt.tight_layout()
+plt.show()
+
+
+# Box Plot
+sales_data["Total"].plot(kind="box")
+
+plt.title("Box Plot of Total Sales")
+plt.ylabel("Sales Amount")
+plt.tight_layout()
+plt.show()
+# ------------------------------------------------------------
+# End of Program
+# ------------------------------------------------------------
