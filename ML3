@@ -1,0 +1,109 @@
+# Implementation of Support Vector Machines (SVM)
+
+# for classifying handwritten digits (0 to 9)
+
+# Import necessary libraries
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+from sklearn import datasets, svm, metrics
+
+from sklearn.model_selection import train_test_split
+
+# Step 1: Load the handwritten digits dataset
+
+digits = datasets.load_digits()
+
+# Step 2: Separate features (X) and target labels (y)
+
+X = digits.data
+
+y = digits.target
+
+# Display the shape of the dataset
+
+print("Feature matrix shape:", X.shape)
+
+print("Target vector shape:", y.shape)
+
+# Step 3: Split the dataset into training and testing sets
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+
+    y,
+
+    test_size=0.20,
+
+    random_state=42,
+
+    stratify=y
+
+)
+
+print("\nTraining samples:", X_train.shape[0])
+
+print("Testing samples:", X_test.shape[0])
+
+# Step 4: Create the SVM classifier
+
+clf = svm.SVC(kernel='linear')
+
+# Step 5: Train the SVM model
+
+clf.fit(X_train, y_train)
+
+# Step 6: Predict the digits for test data
+
+y_pred = clf.predict(X_test)
+
+# Step 7: Calculate and display accuracy
+
+accuracy = metrics.accuracy_score(y_test, y_pred)
+
+print("\nAccuracy:", accuracy)
+
+print("Accuracy Percentage:", accuracy * 100, "%")
+
+# Step 8: Display confusion matrix
+
+cm = metrics.confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:")
+
+print(cm)
+
+# Step 9: Display classification report
+
+print("\nClassification Report:")
+
+print(metrics.classification_report(y_test, y_pred))
+
+# Step 10: Visualize some test images with predictions
+
+plt.figure(figsize=(12, 6))
+
+for i in range(10):
+
+    plt.subplot(2, 5, i + 1)
+
+    # Reshape 64 pixels into an 8x8 image
+
+    plt.imshow(X_test[i].reshape(8, 8), cmap='gray_r')
+
+    plt.title(
+
+        f"Predicted: {y_pred[i]}\nActual: {y_test[i]}"
+
+    )
+
+    plt.axis('off')
+
+plt.suptitle("SVM Classification of Handwritten Digits")
+
+plt.tight_layout()
+
+plt.show()
