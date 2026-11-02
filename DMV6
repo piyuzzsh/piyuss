@@ -1,0 +1,113 @@
+# 1. Import Libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# 2. Load Dataset
+df = pd.read_csv("Retail_Sales_Data.csv")
+
+print("\n--- FIRST 5 ROWS ---")
+print(df.head())
+
+print("\n--- DATA SHAPE ---")
+print(df.shape)
+
+print("\n--- DATA INFORMATION ---")
+df.info()
+
+print("\n--- DATA DESCRIPTION ---")
+print(df.describe())
+
+print("\n--- COLUMN NAMES ---")
+print(df.columns.tolist())
+
+print("\n--- MISSING VALUES ---")
+print(df.isnull().sum())
+
+# 3. Identify Relevant Variables
+region_col = "State"
+sales_col = "Sales"
+category_col = "Shop_Category"
+
+# 4. Total Sales by Region
+sales_by_region = df.groupby(region_col)[sales_col].sum()
+
+print("\n--- TOTAL SALES BY REGION ---")
+print(sales_by_region)
+
+# 5. Bar Chart: Sales by Region
+sales_by_region.plot(
+    kind="bar",
+    figsize=(8, 5),
+    color="skyblue"
+)
+
+plt.title("Total Sales by State")
+plt.xlabel("State")
+plt.ylabel("Total Sales")
+plt.tight_layout()
+plt.show()
+
+# Pie Chart: Sales Distribution
+sales_by_region.plot(
+    kind="pie",
+    autopct="%1.1f%%",
+    figsize=(6, 6)
+)
+
+plt.title("Sales Distribution by State")
+plt.ylabel("")
+plt.show()
+
+# 6. Top Performing Region
+top_region = sales_by_region.idxmax()
+
+print("\n--- TOP PERFORMING REGION ---")
+print("Region:", top_region)
+print("Highest Sales:", sales_by_region.max())
+
+# Display regions in descending order
+print("\n--- SALES RANKING ---")
+print(sales_by_region.sort_values(ascending=False))
+
+# 7. Sales by Region and Product Category
+region_category_sales = df.groupby(
+    [region_col, category_col]
+)[sales_col].sum()
+
+print("\n--- SALES BY STATE AND SHOP CATEGORY ---")
+print(region_category_sales)
+
+# Convert into a table
+table = region_category_sales.unstack(fill_value=0)
+
+print("\n--- SALES TABLE ---")
+print(table)
+
+# 8. Grouped Bar Chart
+table.plot(
+    kind="bar",
+    figsize=(10, 6)
+)
+
+plt.title("Sales by State and Shop Category")
+plt.xlabel("State")
+plt.ylabel("Total Sales")
+plt.legend(title="Shop Category")
+plt.tight_layout()
+plt.show()
+
+# Stacked Bar Chart
+table.plot(
+    kind="bar",
+    stacked=True,
+    figsize=(10, 6)
+)
+
+plt.title("Stacked Sales by State and Shop Category")
+plt.xlabel("State")
+plt.ylabel("Total Sales")
+plt.legend(title="Shop Category")
+plt.tight_layout()
+plt.show()
+
+print("\nData Aggregation Completed Successfully!")
