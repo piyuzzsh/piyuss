@@ -1,0 +1,105 @@
+# Implementation of K-Means Clustering using Iris Dataset
+# Determine optimal number of clusters using Elbow Method
+
+# Step 1: Import Libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+# Step 2: Load Dataset
+data = pd.read_csv("Iris.csv")
+
+print("First 5 rows of the dataset:")
+print(data.head())
+
+print("\nDataset shape:", data.shape)
+
+# Step 3: Select Features
+X = data[
+    [
+        "SepalLengthCm",
+        "SepalWidthCm",
+        "PetalLengthCm",
+        "PetalWidthCm"
+    ]
+]
+
+print("\nSelected Features:")
+print(X.head())
+
+# Step 4: Apply Elbow Method
+wcss = []
+
+for i in range(1, 11):
+    kmeans = KMeans(
+        n_clusters=i,
+        random_state=42,
+        n_init=10
+    )
+
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+
+print("\nWCSS Values:")
+print(wcss)
+
+# Step 5: Plot Elbow Curve
+plt.figure(figsize=(8, 5))
+
+plt.plot(
+    range(1, 11),
+    wcss,
+    marker='o'
+)
+
+plt.title("Elbow Method")
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+plt.xticks(range(1, 11))
+plt.grid(True)
+plt.show()
+
+# Step 6: Apply K-Means with 3 Clusters
+kmeans = KMeans(
+    n_clusters=3,
+    random_state=42,
+    n_init=10
+)
+
+clusters = kmeans.fit_predict(X)
+
+data["Cluster"] = clusters
+
+# Step 7: Display Cluster Assignments
+print("\nCluster Assignments:")
+print(data[["Id", "Species", "Cluster"]].head(10))
+
+print("\nNumber of Data Points in Each Cluster:")
+print(data["Cluster"].value_counts().sort_index())
+
+# Step 8: Visualize Clusters
+plt.figure(figsize=(8, 5))
+
+plt.scatter(
+    X["PetalLengthCm"],
+    X["PetalWidthCm"],
+    c=clusters,
+    s=50
+)
+
+# Display Centroids
+centers = kmeans.cluster_centers_
+
+plt.scatter(
+    centers[:, 2],
+    centers[:, 3],
+    c='red',
+    label="Centroids"
+)
+
+plt.title("K-Means Clustering of Iris Dataset")
+plt.xlabel("Petal Length (cm)")
+plt.ylabel("Petal Width (cm)")
+plt.legend()
+plt.grid(True)
+plt.show()
